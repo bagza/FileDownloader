@@ -31,11 +31,3 @@ android {
 dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
 }
-
-apply from: 'https://raw.githubusercontent.com/Jacksgong/JCenter/master/license.gradle'
-
-if (isForUpload2Maven()) {
-    println ':library:include upload 2 maven methods'
-    apply from: 'https://raw.githubusercontent.com/Jacksgong/JCenter/master/installv1.gradle'
-    apply from: 'https://raw.githubusercontent.com/Jacksgong/JCenter/master/bintrayv1.gradle'
-}
