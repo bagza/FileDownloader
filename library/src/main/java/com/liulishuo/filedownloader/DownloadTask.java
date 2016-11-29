@@ -16,6 +16,7 @@
 
 package com.liulishuo.filedownloader;
 
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -109,6 +110,15 @@ public class DownloadTask implements BaseDownloadTask, BaseDownloadTask.IRunning
         } else {
             this.mFilename = new File(path).getName();
         }
+
+        return this;
+    }
+
+    @Override
+    public BaseDownloadTask setUri(String uriString) {
+        this.mPath = uriString;
+        this.mPathAsDirectory = false;
+        this.mFilename = null;
 
         return this;
     }

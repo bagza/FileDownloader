@@ -16,6 +16,8 @@
 
 package com.liulishuo.filedownloader;
 
+import android.net.Uri;
+
 import com.liulishuo.filedownloader.exception.FileDownloadGiveUpRetryException;
 import com.liulishuo.filedownloader.message.MessageSnapshotThreadPool;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
@@ -62,6 +64,8 @@ public interface BaseDownloadTask {
      * @see #getFilename()
      */
     BaseDownloadTask setPath(final String path, final boolean pathAsDirectory);
+
+    BaseDownloadTask setUri(final String uriString);
 
     /**
      * @param listener For callback download status(pending,connected,progress,
