@@ -89,8 +89,10 @@ class DefaultDatabaseImpl implements FileDownloadDatabase {
 
                 final File targetFile = new File(targetFilePath);
 
+
+                //URI REFACTOR NOTE - DO NOT SUPPURT THIS. We can not re
                 // consider check in new thread, but SQLite lock | file lock aways effect, so sync
-                if (model.getStatus() == FileDownloadStatus.paused &&
+                /*if (model.getStatus() == FileDownloadStatus.paused &&
                         FileDownloadMgr.isBreakpointAvailable(model.getId(), model,
                                 model.getPath(), null)) {
                     // can be reused in the old mechanism(no-temp-file).
@@ -106,7 +108,7 @@ class DefaultDatabaseImpl implements FileDownloadDatabase {
 
                         }
                     }
-                }
+                }*/
 
                 /**
                  * Remove {@code model} from DB if it can't used for judging whether the

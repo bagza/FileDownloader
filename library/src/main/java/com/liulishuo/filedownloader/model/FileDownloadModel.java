@@ -107,12 +107,12 @@ public class FileDownloadModel {
         return FileDownloadUtils.getTargetFilePath(getPath(), isPathAsDirectory(), getFilename());
     }
 
-    public String getTempFilePath() {
+    /*public String getTempFilePath() {
         if (getTargetFilePath() == null) {
             return null;
         }
         return FileDownloadUtils.getTempPath(getTargetFilePath());
-    }
+    }*/
 
     public byte getStatus() {
         return status;

@@ -382,7 +382,7 @@ public class FileDownloadRunnable implements Runnable {
                             FileDownloadLog.w(FileDownloadRunnable.class, "%d response code %d, " +
                                             "range[%d] isn't make sense, so delete the dirty file[%s]" +
                                             ", and try to redownload it from byte-0.", id,
-                                    response.code(), model.getSoFar(), model.getTempFilePath());
+                                    response.code(), model.getSoFar(), model.getTargetFilePath());
                             onRetry(httpException, retryingTimes++);
                             break;
                         default:
@@ -480,8 +480,9 @@ public class FileDownloadRunnable implements Runnable {
             // Step 8, Compare between the downloaded so far bytes with the total bytes.
             if (soFar == total) {
 
+                //DON"T DO THIS STEP. TO HACKY TO USe URI OTHERWISE.
                 // Step 9, rename the temp file to the completed file.
-                renameTempFile();
+                //renameTempFile();
 
                 // Step 10, remove data from DB.
                 helper.remove(mId);
@@ -515,7 +516,7 @@ public class FileDownloadRunnable implements Runnable {
         }
     }
 
-    private void renameTempFile() {
+    /*private void renameTempFile() {
         final String tempPath = model.getTempFilePath();
         final String targetPath = model.getTargetFilePath();
 
@@ -552,7 +553,7 @@ public class FileDownloadRunnable implements Runnable {
                 }
             }
         }
-    }
+    }*/
 
     private long calculateCallbackMinIntervalBytes(final long total, final long maxProgressCount) {
         if (maxProgressCount <= 0) {
@@ -847,7 +848,7 @@ public class FileDownloadRunnable implements Runnable {
     // ----------------------------------
     private FileDownloadOutputStream getOutputStream(final boolean append, final long totalBytes)
             throws IOException, IllegalAccessException {
-        final String tempPath = model.getTempFilePath();
+        final String tempPath = model.getTargetFilePath();
         if (TextUtils.isEmpty(tempPath)) {
             throw new RuntimeException("found invalid internal destination path, empty");
         }
@@ -907,7 +908,7 @@ public class FileDownloadRunnable implements Runnable {
                 outputStreamSupportSeek)) {
             this.isResumeDownloadAvailable = true;
             if (!outputStreamSupportSeek) {
-                this.model.setSoFar(new File(model.getTempFilePath()).length());
+                this.model.setSoFar(new File(model.getTargetFilePath()).length());
             }
         } else {
             this.isResumeDownloadAvailable = false;
@@ -916,12 +917,12 @@ public class FileDownloadRunnable implements Runnable {
     }
 
     private void deleteTaskFiles() {
-        deleteTempFile();
+        //deleteTempFile();
         deleteTargetFile();
     }
 
-    private void deleteTempFile() {
-        final String tempFilePath = model.getTempFilePath();
+    /*private void deleteTempFile() {
+        final String tempFilePath = model.getTargetFilePath();
 
         if (tempFilePath != null) {
             final File tempFile = new File(tempFilePath);
@@ -930,7 +931,7 @@ public class FileDownloadRunnable implements Runnable {
                 tempFile.delete();
             }
         }
-    }
+    }*/
 
     private void deleteTargetFile() {
         final String targetFilePath = model.getTargetFilePath();
@@ -944,7 +945,7 @@ public class FileDownloadRunnable implements Runnable {
     }
 
     private Throwable exFiltrate(Throwable ex) {
-        final String tempPath = model.getTempFilePath();
+        final String targetPath = model.getTargetFilePath();
         /**
          * Only handle the case of Chunked resource, if it is not chunked, has already been handled
          * in {@link #getOutputStream(boolean, long)}.
@@ -952,14 +953,14 @@ public class FileDownloadRunnable implements Runnable {
         if ((model.getTotal() == TOTAL_VALUE_IN_CHUNKED_RESOURCE ||
                 FileDownloadProperties.getImpl().FILE_NON_PRE_ALLOCATION)
                 && ex instanceof IOException &&
-                new File(tempPath).exists()) {
+                new File(targetPath).exists()) {
             // chunked
             final long freeSpaceBytes = FileDownloadUtils.
-                    getFreeSpaceBytes(tempPath);
+                    getFreeSpaceBytes(targetPath);
             if (freeSpaceBytes <= BUFFER_SIZE) {
                 // free space is not enough.
                 long downloadedSize = 0;
-                final File file = new File(tempPath);
+                final File file = new File(targetPath);
                 if (!file.exists()) {
                     FileDownloadLog.e(FileDownloadRunnable.class, ex, "Exception with: free " +
                             "space isn't enough, and the target file not exist.");

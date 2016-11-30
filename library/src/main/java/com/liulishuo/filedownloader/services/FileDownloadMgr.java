@@ -162,14 +162,14 @@ class FileDownloadMgr implements IThreadPoolMonitor {
             return false;
         }
 
-        if (model.getTempFilePath() == null) {
+        if (model.getTargetFilePath() == null) {
             if (FileDownloadLog.NEED_LOG) {
                 FileDownloadLog.d(FileDownloadMgr.class, "can't continue %d temp path == null", id);
             }
             return false;
         }
 
-        return isBreakpointAvailable(id, model, model.getTempFilePath(), outputStreamSupportSeek);
+        return isBreakpointAvailable(id, model, model.getTargetFilePath(), outputStreamSupportSeek);
     }
 
     public static boolean isBreakpointAvailable(final int id, final FileDownloadModel model,

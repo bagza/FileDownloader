@@ -13,4 +13,9 @@ public class JavaFileWrapper implements FileWrapper{
     public JavaFileWrapper(File file) {
         this.file = file;
     }
+
+    @Override
+    public boolean exists() {
+        return false;
+    }
 }

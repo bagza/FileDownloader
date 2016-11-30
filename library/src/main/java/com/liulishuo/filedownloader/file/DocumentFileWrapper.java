@@ -16,4 +16,9 @@ public class DocumentFileWrapper implements FileWrapper {
         this.context = context;
         this.documentFile = documentFile;
     }
+
+    @Override
+    public boolean exists() {
+        return false;
+    }
 }
