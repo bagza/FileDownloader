@@ -1,5 +1,9 @@
 package com.liulishuo.filedownloader.file;
 
+import android.os.Build;
+import android.os.StatFs;
+import android.support.v4.provider.DocumentFile;
+
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.io.File;
@@ -10,14 +14,31 @@ import java.security.InvalidParameterException;
  */
 
 public interface FileWrapper  {
+    boolean isDirectory();
+    long length();
+    boolean delete();
     boolean exists();
 
+    //TODO
+    //BAKE FileDownloadOutputStream
+
+    //For 19-20  just return LONG MAX... For a while.
+    /*public static long getFreeSpaceBytes(final String path) {
+        long freeSpaceBytes;
+        final StatFs statFs = new StatFs(path);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            freeSpaceBytes = statFs.getAvailableBytes();
+        } else {
+            //noinspection deprecation
+            freeSpaceBytes = statFs.getAvailableBlocks() * (long) statFs.getBlockSize();
+        }
+
+        return freeSpaceBytes;
+    }*/
 
     /*//TODO
     private void todo() {
 
-        //usage of this?? on N make move document.
-        FileDownloadUtils.getTempPath(getTargetFilePath());
 
         //from DownloadTaskHunter
         //TODO MOVE TO FACTORY
@@ -41,11 +62,15 @@ public interface FileWrapper  {
             }
         }
 
-        //delete temp files.
+        if (!file.exists()) {
+            if (!file.createNewFile()) {
+                throw new IOException(
+                        FileDownloadUtils.formatString("create new file error  %s",
+                                file.getAbsolutePath()));
+            }
+        }
 
 
-        //JUST for compatibility
-        boolean renameTo()
 
         boolean isDirectory();
 

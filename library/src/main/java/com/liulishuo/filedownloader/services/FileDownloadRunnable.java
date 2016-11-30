@@ -848,32 +848,26 @@ public class FileDownloadRunnable implements Runnable {
     // ----------------------------------
     private FileDownloadOutputStream getOutputStream(final boolean append, final long totalBytes)
             throws IOException, IllegalAccessException {
-        final String tempPath = model.getTargetFilePath();
-        if (TextUtils.isEmpty(tempPath)) {
+        final String targetFilePath = model.getTargetFilePath();
+        if (TextUtils.isEmpty(targetFilePath)) {
             throw new RuntimeException("found invalid internal destination path, empty");
         }
 
         //noinspection ConstantConditions
-        if (!FileDownloadUtils.isFilenameValid(tempPath)) {
+        /*if (!FileDownloadUtils.isFilenameValid(targetFilePath)) {
             throw new RuntimeException(
                     FileDownloadUtils.formatString("found invalid internal destination filename" +
-                            " %s", tempPath));
-        }
+                            " %s", targetFilePath));
+        }*/
 
-        File file = new File(tempPath);
+        File file = new File(targetFilePath);
 
         if (file.exists() && file.isDirectory()) {
             throw new RuntimeException(
                     FileDownloadUtils.formatString("found invalid internal destination path[%s]," +
-                            " & path is directory[%B]", tempPath, file.isDirectory()));
+                            " & path is directory[%B]", targetFilePath, file.isDirectory()));
         }
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                throw new IOException(
-                        FileDownloadUtils.formatString("create new file error  %s",
-                                file.getAbsolutePath()));
-            }
-        }
+
 
         FileDownloadOutputStream outputStream = mOutputStreamCreator.create(file);
 
@@ -882,7 +876,7 @@ public class FileDownloadRunnable implements Runnable {
             final long breakpointBytes = file.length();
             final long requiredSpaceBytes = totalBytes - breakpointBytes;
 
-            final long freeSpaceBytes = FileDownloadUtils.getFreeSpaceBytes(tempPath);
+            final long freeSpaceBytes = FileDownloadUtils.getFreeSpaceBytes(targetFilePath);
 
             if (freeSpaceBytes < requiredSpaceBytes) {
                 outputStream.close();
