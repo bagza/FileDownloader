@@ -363,7 +363,7 @@ public class FileDownloader {
         if (FileDownloadServiceProxy.getImpl().clearTaskData(id)) {
             // delete the task data in the filedownloader database successfully or no data with the
             // id in filedownloader database.
-            //THIS IS A DUPLICATION OF TEMP DELETION
+            //THIS IS A DUPLICATION OF TEMP DELETION<
             /*final File intermediateFile = new File(FileDownloadUtils.getTempPath(targetFilePath));
             if (intermediateFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored

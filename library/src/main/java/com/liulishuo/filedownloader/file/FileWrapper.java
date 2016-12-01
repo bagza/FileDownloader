@@ -22,7 +22,7 @@ public interface FileWrapper  {
     //TODO
     //BAKE FileDownloadOutputStream
 
-    //For 19-20  just return LONG MAX... For a while.
+    //For 19-20  just return LONG MAX... For a while. FROM UTILS
     /*public static long getFreeSpaceBytes(final String path) {
         long freeSpaceBytes;
         final StatFs statFs = new StatFs(path);
@@ -36,12 +36,10 @@ public interface FileWrapper  {
         return freeSpaceBytes;
     }*/
 
-    /*//TODO
-    private void todo() {
-
-
+    //TODO
+    /*private void todo() {
         //from DownloadTaskHunter
-        //TODO MOVE TO FACTORY
+        //TODO MOVE PREPARE TO FACTORY
         createDirectoriesIfNeeded{
             final File dir;
             if (origin.isPathAsDirectory()) {
@@ -71,18 +69,10 @@ public interface FileWrapper  {
         }
 
 
-
-        boolean isDirectory();
-
-        length()
-
-        delete
+    }*/
 
 
-    }
-
-
-    final class Factory{
+    /*final class Factory{
         public static FileWrapper bakeFileWrapper(String pathOrUri){
 
         }
