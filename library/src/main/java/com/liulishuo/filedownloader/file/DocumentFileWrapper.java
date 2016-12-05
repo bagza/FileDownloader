@@ -19,21 +19,21 @@ public class DocumentFileWrapper implements FileWrapper {
 
     @Override
     public boolean exists() {
-        return false;
+        return documentFile.exists();
     }
 
     @Override
     public boolean isDirectory() {
-        return false;
+        return documentFile.isDirectory();
     }
 
     @Override
     public long length() {
-        return 0;
+        return documentFile.length();
     }
 
     @Override
     public boolean delete() {
-        return false;
+        return documentFile.delete();
     }
 }

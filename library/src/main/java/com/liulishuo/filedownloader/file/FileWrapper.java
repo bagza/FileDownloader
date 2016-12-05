@@ -1,13 +1,18 @@
 package com.liulishuo.filedownloader.file;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.os.StatFs;
+import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.provider.DocumentFile;
 
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.io.File;
 import java.security.InvalidParameterException;
+import java.util.regex.Matcher;
 
 /**
  * Created by Zver on 29.11.2016.
@@ -72,17 +77,36 @@ public interface FileWrapper  {
     }*/
 
 
-    /*final class Factory{
-        public static FileWrapper bakeFileWrapper(String pathOrUri){
+    final class Factory{
+        private Context context;
 
+        public Factory(Context context) {
+            this.context = context;
         }
 
-        public static FileWrapper bakeFile(){
-
+        public FileWrapper bakeFileWrapper(String pathOrUri){
+            boolean isUriString = isUri(pathOrUri);
+            if (isUriString) {
+                Uri uri = Uri.parse(pathOrUri);
+                return bakeWrapperByUri(uri);
+            }
+            else {
+                return bakeWrapperByFilePath(pathOrUri);
+            }
         }
 
-        public static String getTempPathOrUri(String pathOrUri){
-            //just return the same for URI
+        //Just distinguish filepath and Uri, not validating regex
+        private boolean isUri(String maybeUri){
+            return maybeUri.matches("(.+):(.+)");
         }
-    }*/
+
+        private JavaFileWrapper bakeWrapperByFilePath(String path){
+            return new JavaFileWrapper(new File(path));
+        }
+
+        private DocumentFileWrapper bakeWrapperByUri(Uri uri){
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
+            return new DocumentFileWrapper(context, documentFile);
+        }
+    }
 }

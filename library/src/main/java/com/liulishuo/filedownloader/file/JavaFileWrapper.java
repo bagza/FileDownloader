@@ -16,21 +16,21 @@ public class JavaFileWrapper implements FileWrapper{
 
     @Override
     public boolean exists() {
-        return false;
+        return file.exists();
     }
 
     @Override
     public boolean isDirectory() {
-        return false;
+        return file.isDirectory();
     }
 
     @Override
     public long length() {
-        return 0;
+        return file.length();
     }
 
     @Override
     public boolean delete() {
-        return false;
+        return file.delete();
     }
 }
