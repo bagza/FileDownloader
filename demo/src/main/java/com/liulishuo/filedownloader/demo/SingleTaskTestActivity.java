@@ -1,7 +1,13 @@
 package com.liulishuo.filedownloader.demo;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -39,6 +45,51 @@ public class SingleTaskTestActivity extends AppCompatActivity {
         initChunkTransferEncodingDataAction();
     }
 
+    private static final int TREE_REQUEST_CODE = 42;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (treeUri == null)
+            selectFolder();
+    }
+
+    /**
+     * Fires an intent to spin up the "file chooser" UI
+     */
+    public void selectFolder() {
+
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        startActivityForResult(intent, TREE_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TREE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            updateDirectoryEntries(data.getData());
+        }
+    }
+
+    Uri treeUri;
+    DocumentFile newFile;
+
+    void updateDirectoryEntries(Uri uri) {
+        treeUri = uri;
+
+        DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
+
+        // List all existing files inside picked directory
+        for (DocumentFile file : pickedDir.listFiles()) {
+            Log.d("TEST", "Found file " + file.getName() + " with size " + file.length());
+        }
+
+        // Create a new file and write into it
+        newFile = pickedDir.createFile("video/mp4", "testmp4");
+    }
+
 
     // test for the file path = dir path / content-disposition-filename
     // task1: set {@code llsApkFilePath}
@@ -62,8 +113,9 @@ public class SingleTaskTestActivity extends AppCompatActivity {
         deleteBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new File(llsApkFilePath).delete();
-                new File(FileDownloadUtils.getTempPath(llsApkFilePath)).delete();
+                newFile.delete();
+                /*new File(llsApkFilePath).delete();
+                new File(FileDownloadUtils.getTempPath(llsApkFilePath)).delete();*/
             }
         });
 
@@ -159,9 +211,59 @@ public class SingleTaskTestActivity extends AppCompatActivity {
             case 1:
                 url = Constant.LIULISHUO_APK_URL;
                 tag = new ViewHolder(new WeakReference<>(this), progressBar1, null, speedTv1, 1);
-                path = llsApkFilePath;
+                path = newFile.getUri().toString();
                 tag.setFilenameTv(filenameTv1);
-                break;
+
+                return FileDownloader.getImpl().create(url)
+                        .setUri(path)
+                        .setCallbackProgressTimes(300)
+                        .setMinIntervalUpdateSpeed(400)
+                        .setTag(tag)
+                        .setListener(new FileDownloadSampleListener() {
+
+                            @Override
+                            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                super.pending(task, soFarBytes, totalBytes);
+                                ((ViewHolder) task.getTag()).updatePending(task);
+                            }
+
+                            @Override
+                            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                super.progress(task, soFarBytes, totalBytes);
+                                ((ViewHolder) task.getTag()).updateProgress(soFarBytes, totalBytes,
+                                        task.getSpeed());
+                            }
+
+                            @Override
+                            protected void error(BaseDownloadTask task, Throwable e) {
+                                super.error(task, e);
+                                ((ViewHolder) task.getTag()).updateError(e, task.getSpeed());
+                            }
+
+                            @Override
+                            protected void connected(BaseDownloadTask task, String etag, boolean isContinue, int soFarBytes, int totalBytes) {
+                                super.connected(task, etag, isContinue, soFarBytes, totalBytes);
+                                ((ViewHolder) task.getTag()).updateConnected(etag, task.getFilename());
+                            }
+
+                            @Override
+                            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                super.paused(task, soFarBytes, totalBytes);
+                                ((ViewHolder) task.getTag()).updatePaused(task.getSpeed());
+                            }
+
+                            @Override
+                            protected void completed(BaseDownloadTask task) {
+                                super.completed(task);
+                                ((ViewHolder) task.getTag()).updateCompleted(task);
+                            }
+
+                            @Override
+                            protected void warn(BaseDownloadTask task) {
+                                super.warn(task);
+                                ((ViewHolder) task.getTag()).updateWarn();
+                            }
+                        });
             case 2:
                 url = Constant.LIULISHUO_APK_URL;
                 tag = new ViewHolder(new WeakReference<>(this), progressBar2, null, speedTv2, 2);

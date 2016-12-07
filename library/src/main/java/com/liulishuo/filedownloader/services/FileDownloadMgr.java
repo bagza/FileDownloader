@@ -18,6 +18,7 @@ package com.liulishuo.filedownloader.services;
 
 
 import com.liulishuo.filedownloader.IThreadPoolMonitor;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.model.FileDownloadHeader;
 import com.liulishuo.filedownloader.model.FileDownloadModel;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
@@ -185,7 +186,7 @@ class FileDownloadMgr implements IThreadPoolMonitor {
                 break;
             }
 
-            File file = new File(path);
+            FileWrapper file = FileDownloadHelper.bakeFileWrapper(path);
             final boolean isExists = file.exists();
             final boolean isDirectory = file.isDirectory();
 

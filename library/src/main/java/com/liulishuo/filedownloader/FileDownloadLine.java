@@ -20,6 +20,7 @@ import android.app.Notification;
 import android.os.Looper;
 
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
+import com.liulishuo.filedownloader.util.FileDownloadHelper;
 
 import java.io.File;
 
@@ -118,7 +119,7 @@ public class FileDownloadLine {
             return FileDownloader.getImpl().getStatus(id, path);
         }
 
-        if (path != null && new File(path).exists()) {
+        if (path != null && FileDownloadHelper.bakeFileWrapper(path).exists()) {
             return FileDownloadStatus.completed;
         }
 

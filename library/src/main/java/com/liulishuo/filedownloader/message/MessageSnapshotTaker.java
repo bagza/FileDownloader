@@ -17,6 +17,7 @@
 package com.liulishuo.filedownloader.message;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.model.FileDownloadModel;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.liulishuo.filedownloader.services.FileDownloadRunnable;
@@ -34,7 +35,7 @@ public class MessageSnapshotTaker {
         return take(status, model, null);
     }
 
-    public static MessageSnapshot catchCanReusedOldFile(int id, File oldFile, boolean flowDirectly) {
+    public static MessageSnapshot catchCanReusedOldFile(int id, FileWrapper oldFile, boolean flowDirectly) {
         final long totalBytes = oldFile.length();
         if (totalBytes > Integer.MAX_VALUE) {
             if (flowDirectly) {

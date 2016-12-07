@@ -16,6 +16,8 @@
 
 package com.liulishuo.filedownloader.stream;
 
+import com.liulishuo.filedownloader.file.FileWrapper;
+import com.liulishuo.filedownloader.file.JavaFileWrapper;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
 
 import java.io.BufferedOutputStream;
@@ -64,8 +66,10 @@ public class FileDownloadBufferedOutputStream implements FileDownloadOutputStrea
     public static class Creator implements FileDownloadHelper.OutputStreamCreator {
 
         @Override
-        public FileDownloadOutputStream create(File file) throws FileNotFoundException {
-            return new FileDownloadBufferedOutputStream(file);
+        public FileDownloadOutputStream create(FileWrapper file) throws FileNotFoundException {
+            assert file instanceof JavaFileWrapper;
+
+            return new FileDownloadBufferedOutputStream(((JavaFileWrapper) file).getFile());
         }
 
         @Override

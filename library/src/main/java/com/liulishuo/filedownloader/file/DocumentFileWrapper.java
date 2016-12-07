@@ -28,6 +28,10 @@ public class DocumentFileWrapper implements FileWrapper {
         this.buildVersionProvider = buildVersionProvider;
     }
 
+    public DocumentFile getDocumentFile() {
+        return documentFile;
+    }
+
     @Override
     public boolean exists() {
         return documentFile.exists();

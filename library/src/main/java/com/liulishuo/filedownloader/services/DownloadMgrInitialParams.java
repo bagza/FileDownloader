@@ -16,12 +16,17 @@
 
 package com.liulishuo.filedownloader.services;
 
+import com.liulishuo.filedownloader.file.DocumentFileWrapper;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.model.FileDownloadModel;
+import com.liulishuo.filedownloader.stream.FileDownloadDocumentFileStream;
 import com.liulishuo.filedownloader.stream.FileDownloadOutputStream;
 import com.liulishuo.filedownloader.stream.FileDownloadRandomAccessFile;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
 import com.liulishuo.filedownloader.util.FileDownloadLog;
 import com.liulishuo.filedownloader.util.FileDownloadProperties;
+
+import java.io.FileNotFoundException;
 
 import okhttp3.OkHttpClient;
 
@@ -92,7 +97,7 @@ public class DownloadMgrInitialParams {
 
 
     FileDownloadHelper.OutputStreamCreator createOutputStreamCreator() {
-        if (mMaker == null) {
+        /*if (mMaker == null) {
             return createDefaultOutputStreamCreator();
         }
 
@@ -105,8 +110,9 @@ public class DownloadMgrInitialParams {
             return outputStreamCreator;
         } else {
             return createDefaultOutputStreamCreator();
-        }
+        }*/
 
+        return createDefaultOutputStreamCreator();
     }
 
     private OkHttpClient createDefaultOkHttpClient() {
@@ -122,7 +128,29 @@ public class DownloadMgrInitialParams {
     }
 
     private FileDownloadHelper.OutputStreamCreator createDefaultOutputStreamCreator() {
-        return new FileDownloadRandomAccessFile.Creator();
+        return new FileDownloadHelper.OutputStreamCreator() {
+
+            private FileDownloadHelper.OutputStreamCreator docFileCreator = new FileDownloadDocumentFileStream.Creator();
+            private FileDownloadHelper.OutputStreamCreator javaFileCreator = new FileDownloadRandomAccessFile.Creator();
+
+            boolean isSeekSupported = false;
+
+            @Override
+            public FileDownloadOutputStream create(FileWrapper fileWrapper) throws FileNotFoundException {
+                if (fileWrapper instanceof DocumentFileWrapper) {
+                    return docFileCreator.create(fileWrapper);
+                }
+                else {
+                    return javaFileCreator.create(fileWrapper);
+                }
+            }
+
+            //Just don't care about seek, too much refactor job needed to add
+            @Override
+            public boolean supportSeek() {
+                return isSeekSupported;
+            }
+        };
     }
 
     public static class InitCustomMaker {

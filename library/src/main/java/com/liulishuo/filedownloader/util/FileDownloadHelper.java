@@ -21,6 +21,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.liulishuo.filedownloader.IThreadPoolMonitor;
+import com.liulishuo.filedownloader.file.BuildVersionProvider;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.message.MessageSnapshotFlow;
 import com.liulishuo.filedownloader.message.MessageSnapshotTaker;
 import com.liulishuo.filedownloader.model.FileDownloadModel;
@@ -46,14 +48,24 @@ public class FileDownloadHelper {
 
     @SuppressLint("StaticFieldLeak")
     private static Context APP_CONTEXT;
+    private static FileWrapper.Factory FILE_FACTORY;
     private static DownloadMgrInitialParams DOWNLOAD_MANAGER_INITIAL_PARAMS;
 
     public static void holdContext(final Context context) {
         APP_CONTEXT = context;
+        FILE_FACTORY = new FileWrapper.Factory(context, new BuildVersionProvider());
     }
 
     public static Context getAppContext() {
         return APP_CONTEXT;
+    }
+
+    public static FileWrapper.Factory getFileFactory(){
+        return FILE_FACTORY;
+    }
+
+    public static FileWrapper bakeFileWrapper(String pathOrUri){
+        return FileDownloadHelper.getFileFactory().bakeFileWrapper(pathOrUri);
     }
 
     public static void initializeDownloadMgrParams(DownloadMgrInitialParams.InitCustomMaker customMaker) {
@@ -120,7 +132,7 @@ public class FileDownloadHelper {
          * @see FileDownloadBufferedOutputStream.Creator
          * @see FileDownloadOkio.Creator
          */
-        FileDownloadOutputStream create(File file) throws FileNotFoundException;
+        FileDownloadOutputStream create(FileWrapper fileWrapper) throws FileNotFoundException;
 
         /**
          * @return {@code true} if the {@link FileDownloadOutputStream} is created through
@@ -139,7 +151,7 @@ public class FileDownloadHelper {
         }
 
         if (path != null) {
-            final File file = new File(path);
+            final FileWrapper file = FileDownloadHelper.bakeFileWrapper(path);
             if (file.exists()) {
                 MessageSnapshotFlow.getImpl().inflow(MessageSnapshotTaker.
                         catchCanReusedOldFile(id, file, flowDirectly));

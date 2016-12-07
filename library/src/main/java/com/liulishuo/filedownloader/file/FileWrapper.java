@@ -71,10 +71,12 @@ public interface FileWrapper  {
 
 
     final class Factory{
-        private Context context;
+        private final Context context;
+        private final BuildVersionProvider buildVersionProvider;
 
-        public Factory(Context context) {
+        public Factory(Context context, BuildVersionProvider buildVersionProvider) {
             this.context = context;
+            this.buildVersionProvider = buildVersionProvider;
         }
 
         public FileWrapper bakeFileWrapper(String pathOrUri){

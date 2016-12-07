@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.model.FileDownloadModel;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
@@ -87,7 +88,7 @@ class DefaultDatabaseImpl implements FileDownloadDatabase {
                     continue;
                 }
 
-                final File targetFile = new File(targetFilePath);
+                final FileWrapper targetFile = FileDownloadHelper.bakeFileWrapper(targetFilePath);
 
 
                 //URI REFACTOR NOTE - DO NOT SUPPURT THIS. We can not re

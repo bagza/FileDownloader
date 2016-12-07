@@ -25,6 +25,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.liulishuo.filedownloader.event.DownloadServiceConnectChangedEvent;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.liulishuo.filedownloader.model.FileDownloadTaskAtom;
 import com.liulishuo.filedownloader.services.DownloadMgrInitialParams;
@@ -370,7 +371,7 @@ public class FileDownloader {
                 intermediateFile.delete();
             }*/
 
-            final File targetFile = new File(targetFilePath);
+            final FileWrapper targetFile = FileDownloadHelper.bakeFileWrapper(targetFilePath);
             if (targetFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 targetFile.delete();

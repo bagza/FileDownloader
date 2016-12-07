@@ -514,7 +514,8 @@ public class DownloadTaskHunter implements ITaskHunter, ITaskHunter.IStarter, IT
             }
         }
 
-        final File dir;
+        //WISDOM: refactored to uri - forget about directories. Anyway, not now.
+        /*final File dir;
         if (origin.isPathAsDirectory()) {
             dir = new File(origin.getPath());
         } else {
@@ -530,7 +531,7 @@ public class DownloadTaskHunter implements ITaskHunter, ITaskHunter.IStarter, IT
         if (!dir.exists()) {
             //noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
-        }
+        }*/
     }
 
     private int getId() {

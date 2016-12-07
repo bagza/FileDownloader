@@ -16,6 +16,8 @@
 
 package com.liulishuo.filedownloader.stream;
 
+import com.liulishuo.filedownloader.file.FileWrapper;
+import com.liulishuo.filedownloader.file.JavaFileWrapper;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
 
 import java.io.File;
@@ -62,8 +64,9 @@ public class FileDownloadRandomAccessFile implements FileDownloadOutputStream {
     public static class Creator implements FileDownloadHelper.OutputStreamCreator {
 
         @Override
-        public FileDownloadOutputStream create(File file) throws FileNotFoundException {
-            return new FileDownloadRandomAccessFile(file);
+        public FileDownloadOutputStream create(FileWrapper file) throws FileNotFoundException {
+            assert file instanceof JavaFileWrapper;
+            return new FileDownloadRandomAccessFile(((JavaFileWrapper) file).getFile());
         }
 
         @Override

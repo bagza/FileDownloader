@@ -26,7 +26,7 @@ import android.util.Log;
  */
 public class FileDownloadLog {
 
-    public static boolean NEED_LOG = false;
+    public static boolean NEED_LOG = true;
 
     private final static String TAG = "FileDownloader.";
 
@@ -60,11 +60,11 @@ public class FileDownloadLog {
 
     private static void log(int priority, Object o, Throwable throwable, String message, Object... args) {
         final boolean force = priority >= Log.WARN;
-        if (!force && !NEED_LOG) {
+        /*if (!force && !NEED_LOG) {
             return;
-        }
+        }*/
 
-        Log.println(priority, getTag(o), FileDownloadUtils.formatString(message, args));
+        Log.d(getTag(o), FileDownloadUtils.formatString(message, args));
         if (throwable != null) {
             throwable.printStackTrace();
         }

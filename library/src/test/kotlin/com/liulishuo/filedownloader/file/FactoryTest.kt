@@ -31,7 +31,7 @@ class FactoryTest {
     @Rule @JvmField
     var tempFolder = TemporaryFolder()
 
-    var factory = FileWrapper.Factory(null)
+    var factory = FileWrapper.Factory(null, null)
 
     @Test
     fun `pass file string - return java File wrapper`(){

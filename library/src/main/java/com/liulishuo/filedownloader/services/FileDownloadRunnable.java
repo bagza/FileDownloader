@@ -29,6 +29,7 @@ import com.liulishuo.filedownloader.exception.FileDownloadGiveUpRetryException;
 import com.liulishuo.filedownloader.exception.FileDownloadHttpException;
 import com.liulishuo.filedownloader.exception.FileDownloadNetworkPolicyException;
 import com.liulishuo.filedownloader.exception.FileDownloadOutOfSpaceException;
+import com.liulishuo.filedownloader.file.FileWrapper;
 import com.liulishuo.filedownloader.message.MessageSnapshotFlow;
 import com.liulishuo.filedownloader.message.MessageSnapshotTaker;
 import com.liulishuo.filedownloader.model.FileDownloadHeader;
@@ -860,7 +861,7 @@ public class FileDownloadRunnable implements Runnable {
                             " %s", targetFilePath));
         }*/
 
-        File file = new File(targetFilePath);
+        FileWrapper file = FileDownloadHelper.bakeFileWrapper(targetFilePath);
 
         if (file.exists() && file.isDirectory()) {
             throw new RuntimeException(
@@ -902,7 +903,7 @@ public class FileDownloadRunnable implements Runnable {
                 outputStreamSupportSeek)) {
             this.isResumeDownloadAvailable = true;
             if (!outputStreamSupportSeek) {
-                this.model.setSoFar(new File(model.getTargetFilePath()).length());
+                this.model.setSoFar(FileDownloadHelper.bakeFileWrapper(model.getTargetFilePath()).length());
             }
         } else {
             this.isResumeDownloadAvailable = false;
@@ -930,7 +931,7 @@ public class FileDownloadRunnable implements Runnable {
     private void deleteTargetFile() {
         final String targetFilePath = model.getTargetFilePath();
         if (targetFilePath != null) {
-            final File targetFile = new File(targetFilePath);
+            final FileWrapper targetFile = FileDownloadHelper.bakeFileWrapper(targetFilePath);
             if (targetFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 targetFile.delete();
@@ -947,14 +948,14 @@ public class FileDownloadRunnable implements Runnable {
         if ((model.getTotal() == TOTAL_VALUE_IN_CHUNKED_RESOURCE ||
                 FileDownloadProperties.getImpl().FILE_NON_PRE_ALLOCATION)
                 && ex instanceof IOException &&
-                new File(targetPath).exists()) {
+                FileDownloadHelper.bakeFileWrapper(targetPath).exists()) {
             // chunked
             final long freeSpaceBytes = FileDownloadUtils.
                     getFreeSpaceBytes(targetPath);
             if (freeSpaceBytes <= BUFFER_SIZE) {
                 // free space is not enough.
                 long downloadedSize = 0;
-                final File file = new File(targetPath);
+                final FileWrapper file = FileDownloadHelper.bakeFileWrapper(targetPath);
                 if (!file.exists()) {
                     FileDownloadLog.e(FileDownloadRunnable.class, ex, "Exception with: free " +
                             "space isn't enough, and the target file not exist.");
