@@ -423,7 +423,7 @@ public class FileDownloadRunnable implements Runnable {
         final FileDownloadOutputStream outputStream = getOutputStream(isSucceedContinue, total);
 
         try {
-            // Step 1, get input stream
+            // Step 1, getVersion input stream
             inputStream = response.body().byteStream();
             byte[] buff = new byte[BUFFER_SIZE];
 

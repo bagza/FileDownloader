@@ -54,7 +54,7 @@ public class FileDownloadList {
 
     /**
      * @param id download id
-     * @return get counts os same id
+     * @return getVersion counts os same id
      */
     int count(final int id) {
         int size = 0;

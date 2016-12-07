@@ -1,18 +1,10 @@
 package com.liulishuo.filedownloader.file;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
-import android.os.StatFs;
-import android.support.v4.content.ContentResolverCompat;
 import android.support.v4.provider.DocumentFile;
 
-import com.liulishuo.filedownloader.util.FileDownloadUtils;
-
 import java.io.File;
-import java.security.InvalidParameterException;
-import java.util.regex.Matcher;
 
 /**
  * Created by Zver on 29.11.2016.
@@ -23,6 +15,7 @@ public interface FileWrapper  {
     long length();
     boolean delete();
     boolean exists();
+    long getFreeSpace();
 
     //TODO
     //BAKE FileDownloadOutputStream
@@ -106,7 +99,7 @@ public interface FileWrapper  {
 
         private DocumentFileWrapper bakeWrapperByUri(Uri uri){
             DocumentFile documentFile = DocumentFile.fromSingleUri(context, uri);
-            return new DocumentFileWrapper(context, documentFile);
+            return new DocumentFileWrapper(context, documentFile, buildVersionProvider);
         }
     }
 }

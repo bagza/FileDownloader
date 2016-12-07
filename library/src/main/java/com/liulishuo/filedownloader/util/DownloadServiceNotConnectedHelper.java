@@ -53,17 +53,17 @@ public class DownloadServiceNotConnectedHelper {
     }
 
     public static long getSofar(final int id) {
-        log("request get the downloaded so far byte for the task[%d] in the download service", id);
+        log("request getVersion the downloaded so far byte for the task[%d] in the download service", id);
         return 0;
     }
 
     public static long getTotal(final int id) {
-        log("request get the total byte for the task[%d] in the download service", id);
+        log("request getVersion the total byte for the task[%d] in the download service", id);
         return 0;
     }
 
     public static byte getStatus(final int id) {
-        log("request get the status for the task[%d] in the download service", id);
+        log("request getVersion the status for the task[%d] in the download service", id);
         return FileDownloadStatus.INVALID_STATUS;
     }
 

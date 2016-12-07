@@ -8,7 +8,10 @@ import android.os.Build;
  * Helper to mock that STATIC FINAL
  */
 public class BuildVersionProvider {
-    public int get(){
+    public int getVersion(){
         return Build.VERSION.SDK_INT;
+    }
+    public boolean is21orLater(){
+        return getVersion() >= Build.VERSION_CODES.LOLLIPOP;
     }
 }
